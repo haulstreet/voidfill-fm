@@ -23,147 +23,39 @@
   --font-mono:'Space Mono',monospace;
   --font-body:'DM Sans',sans-serif;
 }
-
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--font-body);
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-/* grain */
-body::after{
-  content:'';
-  position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:9999;opacity:.7;
-}
-
-/* ── LAYOUT ── */
-.shell{
-  display:grid;
-  grid-template-rows:auto auto 1fr;
-  min-height:100vh;
-}
-
-/* ── HEADER ── */
-.header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:20px 32px;
-  border-bottom:1px solid var(--border);
-  position:sticky;top:0;
-  background:rgba(9,9,9,0.96);
-  backdrop-filter:blur(20px);
-  z-index:100;
-}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.7}
+.shell{display:grid;grid-template-rows:auto auto 1fr;min-height:100vh}
+.header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(9,9,9,0.96);backdrop-filter:blur(20px);z-index:100}
 .logo-wrap{display:flex;flex-direction:column;gap:3px}
-.logo-name{
-  font-family:var(--font-display);
-  font-size:22px;font-weight:800;
-  letter-spacing:-0.5px;
-  color:var(--pink);line-height:1;
-}
+.logo-name{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--pink);line-height:1}
 .logo-name .fm{font-size:14px;font-weight:700;opacity:.8}
-.logo-sub{
-  font-family:var(--font-mono);
-  font-size:7px;letter-spacing:4px;
-  color:var(--muted);
-}
+.logo-sub{font-family:var(--font-mono);font-size:7px;letter-spacing:4px;color:var(--muted)}
 .header-right{display:flex;align-items:center;gap:14px}
-.live-pill{
-  display:flex;align-items:center;gap:7px;
-  padding:5px 13px;
-  border:1px solid var(--pink);
-  background:#150008;
-  font-family:var(--font-mono);font-size:9px;
-  color:var(--pink);letter-spacing:2.5px;
-}
-.live-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--pink);
-  animation:pulse 1.2s ease-in-out infinite;
-}
+.live-pill{display:flex;align-items:center;gap:7px;padding:5px 13px;border:1px solid var(--pink);background:#150008;font-family:var(--font-mono);font-size:9px;color:var(--pink);letter-spacing:2.5px}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--pink);animation:pulse 1.2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.7)}}
-
 .sig{display:flex;align-items:flex-end;gap:2px;height:14px}
-.sig span{
-  width:3px;background:var(--pink);border-radius:1px;
-  animation:sigwave 1.4s ease-in-out infinite;
-}
+.sig span{width:3px;background:var(--pink);border-radius:1px;animation:sigwave 1.4s ease-in-out infinite}
 .sig span:nth-child(1){height:3px;animation-delay:.0s}
 .sig span:nth-child(2){height:7px;animation-delay:.15s}
 .sig span:nth-child(3){height:11px;animation-delay:.3s}
 .sig span:nth-child(4){height:14px;animation-delay:.45s}
 @keyframes sigwave{0%,100%{opacity:.2}50%{opacity:1}}
-
-/* ── TICKER ── */
-.ticker{
-  overflow:hidden;white-space:nowrap;
-  border-bottom:1px solid var(--border);
-  background:#0a0004;padding:5px 0;
-}
-.ticker-track{
-  display:inline-block;
-  animation:tickmove 35s linear infinite;
-  font-family:var(--font-mono);font-size:9px;
-  color:var(--muted);letter-spacing:1.5px;
-}
+.ticker{overflow:hidden;white-space:nowrap;border-bottom:1px solid var(--border);background:#0a0004;padding:5px 0}
+.ticker-track{display:inline-block;animation:tickmove 35s linear infinite;font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1.5px}
 @keyframes tickmove{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
 .tick-sep{color:var(--pink);margin:0 16px}
-
-/* ── MAIN GRID ── */
-.main{
-  display:grid;
-  grid-template-columns:380px 1fr;
-  min-height:0;
-}
-
-/* ── LEFT PANEL ── */
-.left{
-  border-right:1px solid var(--border);
-  display:flex;flex-direction:column;
-  overflow-y:auto;
-}
-
-/* ── PLAYER SECTION ── */
-.player{
-  padding:28px 28px 22px;
-  border-bottom:1px solid var(--border);
-}
-
-/* Visualiser orb */
-.orb-wrap{
-  display:flex;justify-content:center;align-items:center;
-  margin-bottom:24px;
-  position:relative;
-}
-.orb{
-  width:120px;height:120px;border-radius:50%;
-  background:radial-gradient(circle at 38% 38%, #ff2d7833, #ff2d7808 60%, transparent);
-  border:1px solid #ff2d7830;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;
-}
-.orb::before{
-  content:'';position:absolute;inset:-8px;border-radius:50%;
-  border:1px solid #ff2d7818;
-  animation:orbring 3s linear infinite;
-}
-.orb::after{
-  content:'';position:absolute;inset:-18px;border-radius:50%;
-  border:1px solid #ff2d7810;
-  animation:orbring 5s linear infinite reverse;
-}
+.main{display:grid;grid-template-columns:380px 1fr;min-height:0}
+.left{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.player{padding:28px 28px 22px;border-bottom:1px solid var(--border)}
+.orb-wrap{display:flex;justify-content:center;align-items:center;margin-bottom:24px;position:relative}
+.orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 38% 38%, #ff2d7833, #ff2d7808 60%, transparent);border:1px solid #ff2d7830;display:flex;align-items:center;justify-content:center;position:relative}
+.orb::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:1px solid #ff2d7818;animation:orbring 3s linear infinite}
+.orb::after{content:'';position:absolute;inset:-18px;border-radius:50%;border:1px solid #ff2d7810;animation:orbring 5s linear infinite reverse}
 @keyframes orbring{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.orb-bars{
-  display:flex;align-items:flex-end;gap:3px;height:40px;
-}
-.orb-bar{
-  width:4px;border-radius:2px;
-  background:var(--pink);opacity:.7;
-  animation:orbbar 0.8s ease-in-out infinite;
-}
+.orb-bars{display:flex;align-items:flex-end;gap:3px;height:40px}
+.orb-bar{width:4px;border-radius:2px;background:var(--pink);opacity:.7;animation:orbbar 0.8s ease-in-out infinite}
 .orb-bar:nth-child(1){height:12px;animation-delay:.0s}
 .orb-bar:nth-child(2){height:28px;animation-delay:.1s}
 .orb-bar:nth-child(3){height:40px;animation-delay:.2s}
@@ -173,258 +65,79 @@ body::after{
 .orb-bar:nth-child(7){height:38px;animation-delay:.6s}
 @keyframes orbbar{0%,100%{transform:scaleY(.3);opacity:.3}50%{transform:scaleY(1);opacity:.9}}
 .orb-bar.still{animation:none;transform:scaleY(.25);opacity:.25}
-
-/* Now playing text */
-.np-label{
-  font-family:var(--font-mono);font-size:8px;
-  letter-spacing:3px;color:var(--muted);
-  margin-bottom:6px;
-}
-.np-station{
-  font-family:var(--font-display);font-size:20px;font-weight:800;
-  letter-spacing:-.3px;color:var(--text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  margin-bottom:3px;
-}
-.np-desc{
-  font-size:12px;color:var(--muted);
-  font-style:italic;margin-bottom:14px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-
-/* Controls */
+.np-label{font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:var(--muted);margin-bottom:6px}
+.np-station{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:-.3px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:14px}
 .ctrls{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.btn-play{
-  display:flex;align-items:center;gap:7px;
-  background:var(--pink);color:#fff;border:none;
-  padding:9px 20px;
-  font-family:var(--font-mono);font-size:10px;font-weight:700;
-  letter-spacing:1.5px;cursor:pointer;
-  transition:background .18s,transform .1s;
-  flex-shrink:0;
-}
+.btn-play{display:flex;align-items:center;gap:7px;background:var(--pink);color:#fff;border:none;padding:9px 20px;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:background .18s,transform .1s;flex-shrink:0}
 .btn-play:hover{background:var(--pink2)}
 .btn-play:active{transform:scale(.97)}
 .vol-row{display:flex;align-items:center;gap:8px;flex:1}
 .vol-icon{font-size:11px;color:var(--muted)}
-input[type=range]{
-  -webkit-appearance:none;appearance:none;
-  flex:1;height:2px;background:var(--border);outline:none;cursor:pointer;
-}
-input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:12px;height:12px;
-  background:var(--pink);border-radius:50%;cursor:pointer;
-}
-.vol-val{
-  font-family:var(--font-mono);font-size:9px;
-  color:var(--muted);min-width:28px;text-align:right;
-}
-
-/* waveform strip */
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:2px;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--pink);border-radius:50%;cursor:pointer}
+.vol-val{font-family:var(--font-mono);font-size:9px;color:var(--muted);min-width:28px;text-align:right}
 .wave{display:flex;align-items:center;gap:1.5px;height:28px;margin-top:2px}
-.wbar{
-  width:2.5px;background:var(--pink);border-radius:1px;
-  opacity:.4;animation:wv .9s ease-in-out infinite;
-}
+.wbar{width:2.5px;background:var(--pink);border-radius:1px;opacity:.4;animation:wv .9s ease-in-out infinite}
 .wbar.still{animation:none;transform:scaleY(.2);opacity:.18}
 @keyframes wv{0%,100%{transform:scaleY(.2)}50%{transform:scaleY(1)}}
-
-/* ── STATION LIST ── */
 .stations{padding:22px 28px;flex:1}
-.sec-label{
-  font-family:var(--font-mono);font-size:8px;
-  letter-spacing:3px;color:var(--muted);
-  margin-bottom:12px;
-}
+.sec-label{font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:var(--muted);margin-bottom:12px}
 .station-list{display:flex;flex-direction:column;gap:6px}
-.station-btn{
-  display:flex;align-items:center;gap:14px;
-  padding:13px 16px;
-  background:none;border:1px solid var(--border);
-  color:var(--text);cursor:pointer;
-  transition:all .18s;text-align:left;width:100%;
-  position:relative;overflow:hidden;
-}
-.station-btn::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:var(--pink);transform:scaleY(0);
-  transition:transform .2s;transform-origin:center;
-}
+.station-btn{display:flex;align-items:center;gap:14px;padding:13px 16px;background:none;border:1px solid var(--border);color:var(--text);cursor:pointer;transition:all .18s;text-align:left;width:100%;position:relative;overflow:hidden}
+.station-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--pink);transform:scaleY(0);transition:transform .2s;transform-origin:center}
 .station-btn:hover{border-color:#333;background:var(--surface)}
 .station-btn:hover::before{transform:scaleY(1)}
 .station-btn.active{border-color:var(--pink);background:#150008}
 .station-btn.active::before{transform:scaleY(1)}
-.stn-num{
-  font-family:var(--font-mono);font-size:10px;
-  color:var(--muted);min-width:20px;
-}
+.stn-num{font-family:var(--font-mono);font-size:10px;color:var(--muted);min-width:20px}
 .stn-info{flex:1;min-width:0}
-.stn-name{
-  font-family:var(--font-display);font-size:14px;font-weight:800;
-  letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.stn-genre{
-  font-family:var(--font-mono);font-size:9px;
-  color:var(--muted);letter-spacing:1px;margin-top:2px;
-}
-.stn-mood{
-  font-family:var(--font-mono);font-size:8px;
-  padding:2px 6px;letter-spacing:1px;
-  border:1px solid;flex-shrink:0;
-}
+.stn-name{font-family:var(--font-display);font-size:14px;font-weight:800;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stn-mood{font-family:var(--font-mono);font-size:8px;padding:2px 6px;letter-spacing:1px;border:1px solid;flex-shrink:0}
 .mood-jazz{color:#ffb347;border-color:#ffb34740;background:#1a0e00}
 .mood-chill{color:#e8ff47;border-color:#e8ff4740;background:#0d1000}
 .mood-lounge{color:#c084fc;border-color:#c084fc40;background:#0d0014}
-.mood-flow{color:#00e5ff;border-color:#00e5ff40;background:#001518}
-.mood-pop{color:#ff6fa3;border-color:#ff6fa340;background:#150008}
-
-/* ── RIGHT PANEL ── */
-.right{
-  display:flex;flex-direction:column;
-  overflow:hidden;
-}
-
-/* AI header */
-.ai-header{
-  padding:22px 28px 18px;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
-}
-.ai-title-wrap{}
-.ai-title{
-  font-family:var(--font-display);font-size:18px;font-weight:800;
-  letter-spacing:-.2px;
-}
-.ai-sub{
-  font-family:var(--font-mono);font-size:8px;
-  color:var(--muted);letter-spacing:2px;margin-top:3px;
-}
-.ai-status{
-  font-family:var(--font-mono);font-size:9px;
-  color:var(--muted);letter-spacing:1px;
-  display:flex;align-items:center;gap:7px;
-}
-.ai-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--muted);
-}
+.mood-mellow{color:#00e5ff;border-color:#00e5ff40;background:#001518}
+.mood-alt{color:#ff6fa3;border-color:#ff6fa340;background:#150008}
+.right{display:flex;flex-direction:column;overflow:hidden}
+.ai-header{padding:22px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ai-title{font-family:var(--font-display);font-size:18px;font-weight:800;letter-spacing:-.2px}
+.ai-sub{font-family:var(--font-mono);font-size:8px;color:var(--muted);letter-spacing:2px;margin-top:3px}
+.ai-status{font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1px;display:flex;align-items:center;gap:7px}
+.ai-dot{width:5px;height:5px;border-radius:50%;background:var(--muted)}
 .ai-dot.on{background:#00e5ff;animation:pulse 2s infinite}
-
-/* Suggestions panel */
-.suggestions-wrap{
-  flex:1;overflow-y:auto;padding:22px 28px;
-}
+.suggestions-wrap{flex:1;overflow-y:auto;padding:22px 28px}
 .suggestions-wrap::-webkit-scrollbar{width:3px}
 .suggestions-wrap::-webkit-scrollbar-thumb{background:var(--muted2)}
-
-.suggest-intro{
-  font-size:13px;color:var(--muted);
-  line-height:1.65;margin-bottom:20px;
-  font-style:italic;
-}
-
+.suggest-intro{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px;font-style:italic}
 .suggest-list{display:flex;flex-direction:column;gap:8px}
-
-.suggest-item{
-  background:var(--surface);
-  border:1px solid var(--border);
-  padding:14px 16px;
-  display:grid;
-  grid-template-columns:28px 1fr auto;
-  align-items:center;gap:12px;
-  transition:border-color .18s,background .18s;
-  animation:slideup .35s ease both;
-}
+.suggest-item{background:var(--surface);border:1px solid var(--border);padding:14px 16px;display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:12px;transition:border-color .18s,background .18s;animation:slideup .35s ease both}
 @keyframes slideup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .suggest-item:hover{border-color:#333;background:var(--surface2)}
-.suggest-num{
-  font-family:var(--font-mono);font-size:10px;
-  color:var(--muted);text-align:center;
-}
-.suggest-info{}
+.suggest-num{font-family:var(--font-mono);font-size:10px;color:var(--muted);text-align:center}
 .suggest-title{font-size:13px;font-weight:500;margin-bottom:2px}
 .suggest-artist{font-family:var(--font-mono);font-size:10px;color:var(--muted)}
-.suggest-why{
-  font-size:11px;color:var(--muted);
-  font-style:italic;margin-top:4px;line-height:1.4;
-}
-.suggest-tag{
-  font-family:var(--font-mono);font-size:8px;
-  padding:2px 6px;border:1px solid var(--border);
-  color:var(--muted);white-space:nowrap;align-self:flex-start;
-}
-
-/* empty / loading states */
-.state-msg{
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:48px 24px;gap:14px;
-  color:var(--muted);text-align:center;
-}
-.state-msg .big{
-  font-family:var(--font-display);font-size:15px;font-weight:800;
-  color:var(--muted2);letter-spacing:1px;
-}
+.suggest-why{font-size:11px;color:var(--muted);font-style:italic;margin-top:4px;line-height:1.4}
+.suggest-tag{font-family:var(--font-mono);font-size:8px;padding:2px 6px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;align-self:flex-start}
+.state-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;gap:14px;color:var(--muted);text-align:center}
+.state-msg .big{font-family:var(--font-display);font-size:15px;font-weight:800;color:var(--muted2);letter-spacing:1px}
 .state-msg p{font-size:12px;line-height:1.6;max-width:260px}
-
-/* Spinner */
-.spin{
-  width:20px;height:20px;
-  border:2px solid var(--border);border-top-color:var(--pink);
-  border-radius:50%;animation:spinning .7s linear infinite;
-  margin:0 auto;
-}
+.spin{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--pink);border-radius:50%;animation:spinning .7s linear infinite;margin:0 auto}
 @keyframes spinning{to{transform:rotate(360deg)}}
-
-/* AI Chat */
-.chat-wrap{
-  border-top:1px solid var(--border);
-  padding:16px 28px;
-  flex-shrink:0;
-}
-.chat-label{
-  font-family:var(--font-mono);font-size:8px;
-  letter-spacing:3px;color:var(--muted);margin-bottom:10px;
-}
-.chat-history{
-  max-height:140px;overflow-y:auto;
-  display:flex;flex-direction:column;gap:7px;
-  margin-bottom:10px;
-}
+.chat-wrap{border-top:1px solid var(--border);padding:16px 28px;flex-shrink:0}
+.chat-label{font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:var(--muted);margin-bottom:10px}
+.chat-history{max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
 .chat-history::-webkit-scrollbar{width:2px}
 .chat-history::-webkit-scrollbar-thumb{background:var(--muted2)}
 .chat-msg{font-size:12px;line-height:1.5;padding:8px 10px}
-.chat-msg.dj{
-  background:var(--surface);
-  border-left:2px solid var(--pink);color:var(--text);
-}
-.chat-msg.you{
-  background:#0e0008;
-  border-left:2px solid #ff6fa3;
-  color:var(--text);text-align:right;
-}
-.chat-msg-lbl{
-  font-family:var(--font-mono);font-size:7px;
-  letter-spacing:1.5px;opacity:.5;margin-bottom:3px;
-}
+.chat-msg.dj{background:var(--surface);border-left:2px solid var(--pink);color:var(--text)}
+.chat-msg.you{background:#0e0008;border-left:2px solid #ff6fa3;color:var(--text);text-align:right}
+.chat-msg-lbl{font-family:var(--font-mono);font-size:7px;letter-spacing:1.5px;opacity:.5;margin-bottom:3px}
 .chat-row{display:flex;gap:6px}
-.chat-input{
-  flex:1;background:var(--surface);
-  border:1px solid var(--border);color:var(--text);
-  padding:8px 12px;font-family:var(--font-mono);font-size:10px;
-  outline:none;
-}
+.chat-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:var(--font-mono);font-size:10px;outline:none}
 .chat-input:focus{border-color:var(--pink)}
 .chat-input::placeholder{color:var(--muted)}
-.btn-send{
-  background:var(--pink);color:#fff;border:none;
-  padding:8px 14px;font-family:var(--font-mono);
-  font-size:10px;font-weight:700;cursor:pointer;
-  transition:background .18s;white-space:nowrap;
-}
+.btn-send{background:var(--pink);color:#fff;border:none;padding:8px 14px;font-family:var(--font-mono);font-size:10px;font-weight:700;cursor:pointer;transition:background .18s;white-space:nowrap}
 .btn-send:hover{background:var(--pink2)}
-
-/* ── MOBILE ── */
 @media(max-width:768px){
   .main{grid-template-columns:1fr;grid-template-rows:auto 1fr}
   .left{border-right:none;border-bottom:1px solid var(--border);overflow:visible}
@@ -445,7 +158,6 @@ input[type=range]::-webkit-slider-thumb{
 
 <div class="shell">
 
-  <!-- HEADER -->
   <header class="header">
     <div class="logo-wrap">
       <div class="logo-name">VOIDFILL<span class="fm">.fm</span></div>
@@ -457,32 +169,27 @@ input[type=range]::-webkit-slider-thumb{
     </div>
   </header>
 
-  <!-- TICKER -->
   <div class="ticker">
     <span class="ticker-track">
       VOIDFILL.fm — LIVE UNDERGROUND RADIO
       <span class="tick-sep">///</span>
-      BOM DIA
+      BOM DIA — Jazz · Bossa · Soul
       <span class="tick-sep">///</span>
-      SPACESHIP BOP
+      SPACESHIP BOP — Ambient · Downtempo · IDM
       <span class="tick-sep">///</span>
-      ALLEY
+      ALLEY — Cocktail · Exotica · Lounge
       <span class="tick-sep">///</span>
-      STATION FOUR
+      STATION FOUR — Liquid Funk · Soulful Electronic
       <span class="tick-sep">///</span>
-      INDIE
+      INDIE — Indie Pop · Electropop · Alternative
       <span class="tick-sep">///</span>
     </span>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
 
-    <!-- LEFT: PLAYER + STATIONS -->
     <div class="left">
-
       <div class="player">
-        <!-- Orb visualiser -->
         <div class="orb-wrap">
           <div class="orb" id="orb">
             <div class="orb-bars" id="orbBars">
@@ -499,14 +206,12 @@ input[type=range]::-webkit-slider-thumb{
 
         <div class="np-label">// NOW PLAYING</div>
         <div class="np-station" id="npStation">Select a station</div>
-        <div class="np-desc" id="npDesc">Choose a channel to start broadcasting</div>
 
         <div class="ctrls">
           <button class="btn-play" id="btnPlay" onclick="togglePlay()">▶ PLAY</button>
           <div class="vol-row">
             <span class="vol-icon">◁</span>
-            <input type="range" min="0" max="100" value="80" id="volSlider"
-              oninput="setVol(this.value)">
+            <input type="range" min="0" max="100" value="80" id="volSlider" oninput="setVol(this.value)">
             <span class="vol-val" id="volVal">80%</span>
           </div>
         </div>
@@ -518,14 +223,11 @@ input[type=range]::-webkit-slider-thumb{
         <div class="sec-label">// STATIONS</div>
         <div class="station-list" id="stationList"></div>
       </div>
+    </div>
 
-    </div><!-- /left -->
-
-    <!-- RIGHT: AI SUGGESTIONS + CHAT -->
     <div class="right">
-
       <div class="ai-header">
-        <div class="ai-title-wrap">
+        <div>
           <div class="ai-title">AI DJ ROMAN</div>
           <div class="ai-sub">// SONG SUGGESTIONS + CHAT</div>
         </div>
@@ -536,7 +238,7 @@ input[type=range]::-webkit-slider-thumb{
       </div>
 
       <div class="suggestions-wrap" id="suggestionsWrap">
-        <div class="state-msg" id="stateMsg">
+        <div class="state-msg">
           <div class="big">NO SIGNAL YET</div>
           <p>Pick a station and hit play. DJ ROMAN will analyse what's on air and suggest tracks you'll want to find.</p>
         </div>
@@ -557,72 +259,71 @@ input[type=range]::-webkit-slider-thumb{
           <button class="btn-send" onclick="sendChat()">SEND</button>
         </div>
       </div>
+    </div>
 
-    </div><!-- /right -->
-  </div><!-- /main -->
-</div><!-- /shell -->
+  </div>
+</div>
 
 <script>
-/* ================================================================
-   CONFIG — paste your free Groq key from console.groq.com
-================================================================ */
 const GROQ_KEY   = "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";
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 
-/* ================================================================
-   STATIONS
-================================================================ */
 const STATIONS = [
   {
-    id:    "bom dia",
-    name:  "BOM DIA",
-    mood:  "jazz",
+    id:        "bom-dia",
+    name:      "BOM DIA",
+    desc:      "Jazz · Bossa Nova · Brazilian Soul",
+    mood:      "jazz",
     moodLabel: "JAZZ",
-    urls:  [
+    urls: [
       "https://ice6.somafm.com/bossa-128-mp3",
       "https://ice2.somafm.com/bossa-128-mp3",
       "https://ice4.somafm.com/bossa-128-mp3",
     ]
   },
   {
-    id:    "spaceship bop",
-    name:  "SPACESHIP BOP",
-    mood:  "chill",
+    id:        "spaceship-bop",
+    name:      "SPACESHIP BOP",
+    desc:      "Vintage Ambient · Downtempo · IDM",
+    mood:      "chill",
     moodLabel: "CHILL",
-    urls:  [
+    urls: [
       "https://ice6.somafm.com/gsclassic-128-mp3",
       "https://ice2.somafm.com/gsclassic-128-mp3",
       "https://ice4.somafm.com/gsclassic-128-mp3",
     ]
   },
   {
-    id:    "alley",
-    name:  "ALLEY",
-    mood:  "lounge",
+    id:        "alley",
+    name:      "ALLEY",
+    desc:      "Cocktail · Exotica · Easy Listening",
+    mood:      "lounge",
     moodLabel: "LOUNGE",
-    urls:  [
+    urls: [
       "https://ice6.somafm.com/illstreet-128-mp3",
       "https://ice2.somafm.com/illstreet-128-mp3",
       "https://ice4.somafm.com/illstreet-128-mp3",
     ]
   },
   {
-    id:    "station four",
-    name:  "STATION FOUR",
-    mood:  "mellow",
+    id:        "station-four",
+    name:      "STATION FOUR",
+    desc:      "Liquid Funk · Jazz · Soulful Electronic",
+    mood:      "mellow",
     moodLabel: "MELLOW",
-    urls:  [
+    urls: [
       "https://ice6.somafm.com/fluid-128-mp3",
       "https://ice2.somafm.com/fluid-128-mp3",
       "https://ice4.somafm.com/fluid-128-mp3",
     ]
   },
   {
-    id:    "indie",
-    name:  "INDIE",
-    mood:  "alt",
+    id:        "indie",
+    name:      "INDIE",
+    desc:      "Indie Pop · Electropop · Alternative",
+    mood:      "alt",
     moodLabel: "ALT",
-    urls:  [
+    urls: [
       "https://ice6.somafm.com/poptron-128-mp3",
       "https://ice2.somafm.com/poptron-128-mp3",
       "https://ice4.somafm.com/poptron-128-mp3",
@@ -630,16 +331,14 @@ const STATIONS = [
   },
 ];
 
-/* ── STATE ── */
-const audio      = document.getElementById('radio');
-audio.volume     = 0.8;
-let playing      = false;
-let current      = null;
-let urlIdx       = 0;
-let chatHistory  = [];
+const audio     = document.getElementById('radio');
+audio.volume    = 0.8;
+let playing     = false;
+let current     = null;
+let urlIdx      = 0;
+let chatHistory = [];
 let suggestTimer = null;
 
-/* ── BUILD WAVEFORM ── */
 function buildWave() {
   const w = document.getElementById('wave');
   w.innerHTML = '';
@@ -651,7 +350,6 @@ function buildWave() {
   }
 }
 
-/* ── BUILD STATIONS ── */
 function buildStations() {
   document.getElementById('stationList').innerHTML = STATIONS.map((s, i) => `
     <button class="station-btn" id="stn-${s.id}" onclick="selectStation('${s.id}')">
@@ -663,7 +361,6 @@ function buildStations() {
     </button>`).join('');
 }
 
-/* ── SELECT STATION ── */
 function selectStation(id) {
   const stn = STATIONS.find(s => s.id === id);
   if (!stn) return;
@@ -674,21 +371,18 @@ function selectStation(id) {
   current = stn;
   urlIdx  = 0;
 
+  // ✅ Only use fields that exist — no stn.genre
   document.getElementById('npStation').textContent = stn.name;
-  document.getElementById('npDesc').textContent    = stn.genre;
 
   startStream();
 }
 
-/* ── STREAM ── */
 function startStream() {
   if (!current) return;
   setAiStatus('CONNECTING...');
   audio.src = current.urls[urlIdx];
   audio.load();
-  audio.play()
-    .then(onPlaying)
-    .catch(tryNext);
+  audio.play().then(onPlaying).catch(tryNext);
 }
 
 function tryNext() {
@@ -710,7 +404,6 @@ function onPlaying() {
   setAiStatus('ON AIR');
   document.querySelectorAll('.orb-bar').forEach(b => b.classList.remove('still'));
   document.querySelectorAll('.wbar').forEach(b => b.classList.remove('still'));
-  // Trigger AI suggestions after a short delay
   clearTimeout(suggestTimer);
   suggestTimer = setTimeout(() => fetchSuggestions(), 1200);
 }
@@ -718,12 +411,8 @@ function onPlaying() {
 audio.addEventListener('error',   () => { if (playing) tryNext(); });
 audio.addEventListener('stalled', () => { if (playing) tryNext(); });
 
-/* ── TOGGLE PLAY ── */
 function togglePlay() {
-  if (!current) {
-    selectStation(STATIONS[0].id);
-    return;
-  }
+  if (!current) { selectStation(STATIONS[0].id); return; }
   if (playing) {
     audio.pause();
     playing = false;
@@ -737,8 +426,7 @@ function togglePlay() {
 }
 
 function setPlayBtn() {
-  const btn = document.getElementById('btnPlay');
-  btn.textContent = playing ? '▐▐ PAUSE' : '▶ PLAY';
+  document.getElementById('btnPlay').textContent = playing ? '▐▐ PAUSE' : '▶ PLAY';
 }
 
 function setVol(v) {
@@ -746,54 +434,38 @@ function setVol(v) {
   document.getElementById('volVal').textContent = v + '%';
 }
 
-/* ── AI STATUS ── */
 function setAiStatus(txt) {
   document.getElementById('aiStatusTxt').textContent = txt;
-  const dot = document.getElementById('aiDot');
-  dot.classList.toggle('on', txt === 'ON AIR');
+  document.getElementById('aiDot').classList.toggle('on', txt === 'ON AIR');
 }
 
-/* ================================================================
-   GROQ HELPER
-================================================================ */
 async function callGroq(messages) {
   const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method:  "POST",
-    headers: {
-      "Content-Type":  "application/json",
-      "Authorization": "Bearer " + GROQ_KEY
-    },
-    body: JSON.stringify({
-      model:      GROQ_MODEL,
-      max_tokens: 900,
-      messages
-    })
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + GROQ_KEY },
+    body: JSON.stringify({ model: GROQ_MODEL, max_tokens: 900, messages })
   });
   const d = await r.json();
   if (d.error) throw new Error(d.error.message);
   return d.choices[0].message.content;
 }
 
-/* ================================================================
-   FETCH SONG SUGGESTIONS
-   Called whenever a new station starts playing.
-================================================================ */
 async function fetchSuggestions() {
   if (!current) return;
-
   const wrap = document.getElementById('suggestionsWrap');
-  wrap.innerHTML = `<div class="state-msg"><div class="spin"></div><p style="margin-top:12px">DJ ROMAN is analysing the ${current.name} vibe...</p></div>`;
+  wrap.innerHTML = `<div class="state-msg"><div class="spin"></div><p style="margin-top:12px">DJ ROMAN is reading the ${current.name} vibe...</p></div>`;
   setAiStatus('ANALYSING...');
 
   try {
+    // ✅ Uses current.name and current.desc — no current.genre
     const raw = await callGroq([
       {
         role:    "system",
-        content: `You are DJ ROMAN, the AI DJ of VOIDFILL.fm underground radio. You have encyclopaedic knowledge of music across all genres. When given a SomaFM station name and genre, you suggest real songs the listener should seek out that fit the vibe. Always a new list of tracks when prompted. Be specific — real artists, real song titles. Respond ONLY with valid raw JSON, no markdown, no code fences, no extra text.`
+        content: "You are DJ ROMAN, the AI DJ of VOIDFILL.fm underground radio. You have encyclopaedic knowledge of music across all genres. Suggest real songs that match the station vibe — real artists, real titles. Always vary your suggestions each time. Respond ONLY with valid raw JSON, no markdown, no code fences, no extra text."
       },
       {
         role:    "user",
-        content: `The listener is tuned into SomaFM "${current.name}" — genre: ${current.genre}. Suggest 7 real songs they should discover that match this station's vibe. Mix well-known and obscure picks. For each track give a short "why" — one evocative sentence. Respond ONLY with this JSON structure: {"intro":"one sentence setting the vibe","tracks":[{"title":"...","artist":"...","genre":"...","why":"...","tag":"..."}]} — tag should be one word: jazz, chill, lounge, flow, pop, ambient, soul, or bossa.`
+        content: `The listener is tuned into "${current.name}" (${current.desc}). Suggest 7 real songs that match this vibe — mix well-known and obscure picks. For each give a short "why" — one evocative sentence. Respond ONLY with: {"intro":"one sentence setting the vibe","tracks":[{"title":"...","artist":"...","why":"...","tag":"..."}]} — tag must be one of: jazz, chill, lounge, flow, pop, ambient, soul, bossa, alt.`
       }
     ]);
 
@@ -806,16 +478,14 @@ async function fetchSuggestions() {
   }
 }
 
-/* ── RENDER SUGGESTIONS ── */
 function renderSuggestions(d) {
   const wrap = document.getElementById('suggestionsWrap');
-
   const tagColors = {
-    jazz:    '#ffb347', bossa: '#ffb347',
-    chill:   '#e8ff47', ambient: '#e8ff47',
-    lounge:  '#c084fc',
-    flow:    '#00e5ff', soul: '#00e5ff',
-    pop:     '#ff6fa3',
+    jazz: '#ffb347', bossa: '#ffb347',
+    chill: '#e8ff47', ambient: '#e8ff47',
+    lounge: '#c084fc',
+    flow: '#00e5ff', soul: '#00e5ff',
+    pop: '#ff6fa3', alt: '#ff6fa3',
   };
 
   const items = d.tracks.map((t, i) => {
@@ -832,14 +502,9 @@ function renderSuggestions(d) {
       </div>`;
   }).join('');
 
-  wrap.innerHTML = `
-    <p class="suggest-intro">${d.intro}</p>
-    <div class="suggest-list">${items}</div>`;
+  wrap.innerHTML = `<p class="suggest-intro">${d.intro}</p><div class="suggest-list">${items}</div>`;
 }
 
-/* ================================================================
-   DJ CHAT
-================================================================ */
 async function sendChat() {
   const inp = document.getElementById('chatInput');
   const msg = inp.value.trim();
@@ -850,22 +515,18 @@ async function sendChat() {
   hist.innerHTML += `<div class="chat-msg you"><div class="chat-msg-lbl">YOU</div>${escHtml(msg)}</div>`;
   hist.innerHTML += `<div class="chat-msg dj" id="djTyping"><div class="chat-msg-lbl">DJ ROMAN</div><div class="spin" style="width:12px;height:12px;margin:4px 0"></div></div>`;
   hist.scrollTop = hist.scrollHeight;
-
   chatHistory.push({ role: "user", content: msg });
 
+  // ✅ Uses current.desc instead of current.genre
   const sysCtx = current
-    ? `The listener is currently tuned into SomaFM "${current.name}" (${current.genre}).`
+    ? `The listener is tuned into "${current.name}" — ${current.desc}.`
     : "No station is currently selected.";
 
   try {
     const reply = await callGroq([
-      {
-        role:    "system",
-        content: `You are DJ ROMAN, AI DJ of VOIDFILL.fm underground radio. You know music deeply — history, artists, genres, recommendations. Keep replies 2–4 sentences, terse and cool. No hashtags. ${sysCtx}`
-      },
+      { role: "system", content: `You are DJ ROMAN, AI DJ of VOIDFILL.fm. Deep music knowledge across all genres. Keep replies 2–4 sentences, terse and cool. No hashtags. ${sysCtx}` },
       ...chatHistory
     ]);
-
     chatHistory.push({ role: "assistant", content: reply });
     document.getElementById('djTyping').innerHTML = `<div class="chat-msg-lbl">DJ ROMAN</div>${escHtml(reply)}`;
   } catch (e) {
@@ -878,7 +539,6 @@ function escHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-/* ── INIT ── */
 buildWave();
 buildStations();
 </script>
