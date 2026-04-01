@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VOIDFILL.fm — 24/7 Underground Radio</title>
+<title>VOIDFILL.fm — Underground Radio</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -36,7 +36,7 @@ body{
 body::after{
   content:'';
   position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseROMANuency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   pointer-events:none;z-index:9999;opacity:.7;
 }
 
@@ -460,17 +460,17 @@ input[type=range]::-webkit-slider-thumb{
   <!-- TICKER -->
   <div class="ticker">
     <span class="ticker-track">
-      VOIDFILL.fm — LIVE UNDERGROUND RADIO FROM ROMANS LIVING ROOM / LOUNGE AREA
+      VOIDFILL.fm — LIVE UNDERGROUND RADIO
       <span class="tick-sep">///</span>
-      BOM DIA
+      BOM DIA — Bossa Nova · Samba · Brazilian Soul
       <span class="tick-sep">///</span>
-      ALIEN ABDUCTION BOPS
+      ALIEN ABDUCTION BOP's — Vintage Ambient · Downtempo
       <span class="tick-sep">///</span>
-      KINDA OLD BOP
+      KINDA OLD BOP — Lounge
       <span class="tick-sep">///</span>
-      STATION FOUR
+      STATION #4 — Liquid Funk · Jazz · Soulful Electronic
       <span class="tick-sep">///</span>
-      SLEEZEmix
+      SLEEZEmix — Indie · Electropop · Alt
       <span class="tick-sep">///</span>
     </span>
   </div>
@@ -526,11 +526,7 @@ input[type=range]::-webkit-slider-thumb{
 
       <div class="ai-header">
         <div class="ai-title-wrap">
-<<<<<<< HEAD
-          <div class="ai-title">AI DJ ROMAN</div>
-=======
           <div class="ai-title">AI DJ ROMAN </div>
->>>>>>> 3e3ab06a9d319f96af35278e240e78a3fb71df3b
           <div class="ai-sub">// SONG SUGGESTIONS + CHAT</div>
         </div>
         <div class="ai-status">
@@ -578,10 +574,11 @@ const GROQ_MODEL = "llama-3.3-70b-versatile";
 ================================================================ */
 const STATIONS = [
   {
-    id:    "bom dia",
+    id:    "bossa",
     name:  "BOM DIA",
-    mood:  "brazil",
-    moodLabel: "brazil",
+    genre: "Bossa Nova · Samba · Brazilian Soul",
+    mood:  "jazz",
+    moodLabel: "JAZZ",
     urls:  [
       "https://ice6.somafm.com/bossa-128-mp3",
       "https://ice2.somafm.com/bossa-128-mp3",
@@ -589,8 +586,9 @@ const STATIONS = [
     ]
   },
   {
-    id:    "alien abduction bop",
-    name:  "ALIEN ABDUCTION BOP",
+    id:    "gsclassic",
+    name:  "Alien Abduction Bop",
+    genre: "Vintage Ambient · Downtempo · IDM",
     mood:  "chill",
     moodLabel: "CHILL",
     urls:  [
@@ -600,8 +598,9 @@ const STATIONS = [
     ]
   },
   {
-    id:    "kinda old bop",
+    id:    "illstreet",
     name:  "KINDA OLD BOP",
+    genre: "Cocktail · Exotica · Easy Listening",
     mood:  "lounge",
     moodLabel: "LOUNGE",
     urls:  [
@@ -611,11 +610,11 @@ const STATIONS = [
     ]
   },
   {
-    id:    "station four",
-    name:  "STATION FOUR",
+    id:    "fluid",
+    name:  "STATION #4",
     genre: "Funk · Jazz · Soulful Electronic",
-    mood:  "mellow",
-    moodLabel: "MELLOW",
+    mood:  "flow",
+    moodLabel: "FLOW",
     urls:  [
       "https://ice6.somafm.com/fluid-128-mp3",
       "https://ice2.somafm.com/fluid-128-mp3",
@@ -623,10 +622,11 @@ const STATIONS = [
     ]
   },
   {
-    id:    "SLEEZEmix",
+    id:    "poptron",
     name:  "SLEEZEmix",
-    mood:  "Indie",
-    moodLabel: "Indie",
+    genre: "Indie · Electropop · Alt",
+    mood:  "pop",
+    moodLabel: "POP",
     urls:  [
       "https://ice6.somafm.com/poptron-128-mp3",
       "https://ice2.somafm.com/poptron-128-mp3",
@@ -788,14 +788,14 @@ async function fetchSuggestions() {
   if (!current) return;
 
   const wrap = document.getElementById('suggestionsWrap');
-  wrap.innerHTML = `<div class="state-msg"><div class="spin"></div><p style="margin-top:12px">DJ ROMAN is analysing the ${current.name} vibe...</p></div>`;
+  wrap.innerHTML = `<div class="state-msg"><div class="spin"></div><p style="margin-top:12px">DJ FREQ is analysing the ${current.name} vibe...</p></div>`;
   setAiStatus('ANALYSING...');
 
   try {
     const raw = await callGroq([
       {
         role:    "system",
-        content: `You are DJ ROMAN, the AI DJ of VOIDFILL.fm underground radio. You have encyclopaedic knowledge of music across all genres. When given a SomaFM station name and genre, you suggest real songs the listener should seek out that fit the vibe. Be specific — real artists, real song titles. Respond ONLY with valid raw JSON, no markdown, no code fences, no extra text.`
+        content: `You are DJ FREQ, the AI DJ of VOIDFILL.fm underground radio. You have encyclopaedic knowledge of music across all genres. When given a SomaFM station name and genre, you suggest real songs the listener should seek out that fit the vibe. Be specific — real artists, real song titles. Respond ONLY with valid raw JSON, no markdown, no code fences, no extra text.`
       },
       {
         role:    "user",
@@ -807,7 +807,7 @@ async function fetchSuggestions() {
     renderSuggestions(d);
     setAiStatus('ON AIR');
   } catch (e) {
-    wrap.innerHTML = `<div class="state-msg"><div class="big">SIGNAL LOST</div><p>Could not reach DJ ROMAN. Check your Groq API key.</p></div>`;
+    wrap.innerHTML = `<div class="state-msg"><div class="big">SIGNAL LOST</div><p>Could not reach DJ FREQ. Check your Groq API key.</p></div>`;
     setAiStatus('ERROR');
   }
 }
@@ -816,6 +816,13 @@ async function fetchSuggestions() {
 function renderSuggestions(d) {
   const wrap = document.getElementById('suggestionsWrap');
 
+  const tagColors = {
+    jazz:    '#ffb347', bossa: '#ffb347',
+    chill:   '#e8ff47', ambient: '#e8ff47',
+    lounge:  '#c084fc',
+    flow:    '#00e5ff', soul: '#00e5ff',
+    pop:     '#ff6fa3',
+  };
 
   const items = d.tracks.map((t, i) => {
     const col = tagColors[t.tag] || '#888';
@@ -847,7 +854,7 @@ async function sendChat() {
 
   const hist = document.getElementById('chatHistory');
   hist.innerHTML += `<div class="chat-msg you"><div class="chat-msg-lbl">YOU</div>${escHtml(msg)}</div>`;
-  hist.innerHTML += `<div class="chat-msg dj" id="djTyping"><div class="chat-msg-lbl">DJ ROMAN</div><div class="spin" style="width:12px;height:12px;margin:4px 0"></div></div>`;
+  hist.innerHTML += `<div class="chat-msg dj" id="djTyping"><div class="chat-msg-lbl">DJ FREQ</div><div class="spin" style="width:12px;height:12px;margin:4px 0"></div></div>`;
   hist.scrollTop = hist.scrollHeight;
 
   chatHistory.push({ role: "user", content: msg });
@@ -860,15 +867,15 @@ async function sendChat() {
     const reply = await callGroq([
       {
         role:    "system",
-        content: `You are DJ ROMAN, AI DJ of VOIDFILL.fm underground radio. You know music deeply — history, artists, genres, recommendations. Keep replies 2–4 sentences, terse and cool. No hashtags. ${sysCtx}`
+        content: `You are DJ FREQ, AI DJ of VOIDFILL.fm underground radio. You know music deeply — history, artists, genres, recommendations. Keep replies 2–4 sentences, terse and cool. No hashtags. ${sysCtx}`
       },
       ...chatHistory
     ]);
 
     chatHistory.push({ role: "assistant", content: reply });
-    document.getElementById('djTyping').innerHTML = `<div class="chat-msg-lbl">DJ ROMAN</div>${escHtml(reply)}`;
+    document.getElementById('djTyping').innerHTML = `<div class="chat-msg-lbl">DJ FREQ</div>${escHtml(reply)}`;
   } catch (e) {
-    document.getElementById('djTyping').innerHTML = `<div class="chat-msg-lbl">DJ ROMAN</div>// Static. Check API key.`;
+    document.getElementById('djTyping').innerHTML = `<div class="chat-msg-lbl">DJ FREQ</div>// Static. Check API key.`;
   }
   hist.scrollTop = hist.scrollHeight;
 }
