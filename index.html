@@ -39,7 +39,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* TICKER */
 .ticker{background:#0f0008;border-bottom:1px solid var(--border);padding:5px 0;overflow:hidden;white-space:nowrap}
-.ticker-inner{display:inline-block;animation:tick 28s linear infinite;font-family:var(--font-mono);font-size:9.5px;color:var(--muted);letter-spacing:1.5px}
+.ticker-inner{display:inline-block;animation:tick 32s linear infinite;font-family:var(--font-mono);font-size:9.5px;color:var(--muted);letter-spacing:1.5px}
 @keyframes tick{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
 .ticker-sep{color:var(--pink);margin:0 14px}
 
@@ -50,9 +50,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .album-art{width:64px;height:64px;flex-shrink:0;background:var(--surface3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .album-art::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,45,120,0.1),transparent)}
 .vinyl{font-size:24px;animation:spin 4s linear infinite}
+.vinyl.paused{animation-play-state:paused}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .track-meta{flex:1;min-width:0}
-.track-title{font-family:var(--font-display);font-size:clamp(18px,4vw,26px);font-weight:800;letter-spacing:-0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-title{font-family:var(--font-display);font-size:clamp(18px,4vw,24px);font-weight:800;letter-spacing:-0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .track-artist{font-size:13px;color:var(--pink);margin:2px 0;font-weight:500}
 .track-genre{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:1px}
 .controls{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
@@ -69,7 +70,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .mood-raw{background:#1a0a00;color:#ff9500;border:1px solid #ff950040}
 .waveform{margin-top:14px;height:36px;display:flex;align-items:center;gap:1.5px}
 .waveform-bar{width:3px;background:var(--pink);border-radius:1px;opacity:0.55;animation:wave 1s ease-in-out infinite}
+.waveform-bar.paused{animation-play-state:paused;transform:scaleY(0.25)}
 @keyframes wave{0%,100%{transform:scaleY(0.25)}50%{transform:scaleY(1)}}
+
+/* STREAM SELECTOR */
+.stream-selector{padding:16px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+.stream-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.stream-btn{font-family:var(--font-mono);font-size:9px;padding:5px 10px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;letter-spacing:1px;transition:all 0.18s;white-space:nowrap}
+.stream-btn:hover{border-color:var(--pink);color:var(--text)}
+.stream-btn.active{border-color:var(--pink);color:var(--pink);background:#120008}
+.stream-status{font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:8px;letter-spacing:1px;min-height:14px}
 
 /* LAYOUT */
 .app-body{display:grid;grid-template-columns:1fr 320px;min-height:calc(100vh - var(--header-h) - 28px)}
@@ -182,9 +192,10 @@ iframe{border:none;width:100%}
   .signal-bars{display:none}
   .tab-content{padding:16px}
   .tabs{padding:0 16px}
-  .now-playing{padding:16px}
+  .now-playing,.stream-selector{padding:16px}
   .vol-wrap{display:none}
   .artists-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .stream-grid{gap:6px}
 }
 @media(min-width:769px){
   .mobile-sidebar{display:none!important}
@@ -196,6 +207,9 @@ iframe{border:none;width:100%}
 </style>
 </head>
 <body>
+
+<!-- Hidden audio element — all streams play through this -->
+<audio id="radioAudio" preload="none"></audio>
 
 <header class="header">
   <div class="logo-text">
@@ -210,74 +224,118 @@ iframe{border:none;width:100%}
 
 <div class="ticker">
   <span class="ticker-inner">
-    NOW PLAYING: MXLPHA — Undertow
+    LIVE NOW: SOMA FM — Underground streams broadcasting 24/7
     <span class="ticker-sep">///</span>
-    NEXT UP: Cassia Grey — Ghost Protocol
+    DARK ZONE — Industrial · EBM · Dark Electronic
     <span class="ticker-sep">///</span>
-    VOIDFILL.fm — Broadcasting underground 24/7
+    GROOVE SALAD — Ambient · IDM · Downtempo
+    <span class="ticker-sep">///</span>
+    DRONE ZONE — Atmospheric · Experimental · Minimal
     <span class="ticker-sep">///</span>
     SUBMIT YOUR TRACK: voidfill.fm/submit
-    <span class="ticker-sep">///</span>
-    LISTENERS ONLINE: 1,247
     <span class="ticker-sep">///</span>
   </span>
 </div>
 
 <div class="app-body">
-
-  <!-- MAIN COLUMN -->
   <div class="main-col">
 
     <!-- NOW PLAYING -->
     <div class="now-playing">
       <div class="section-label">// now playing</div>
       <div class="track-row">
-        <div class="album-art"><div class="vinyl">⬤</div></div>
+        <div class="album-art"><div class="vinyl paused" id="vinyl">⬤</div></div>
         <div class="track-meta">
-          <div class="track-title" id="trackTitle">Undertow</div>
-          <div class="track-artist" id="trackArtist">MXLPHA</div>
-          <div class="track-genre" id="trackGenre">DARK TECHNO / 128 BPM</div>
+          <div class="track-title" id="trackTitle">Select a stream below</div>
+          <div class="track-artist" id="trackArtist">VOIDFILL.fm</div>
+          <div class="track-genre" id="trackGenre">SOMA FM — UNDERGROUND RADIO</div>
           <div class="controls">
-            <button class="btn-ctrl active" id="btnPlay" onclick="togglePlay()">▶ PLAY</button>
-            <button class="btn-ctrl" onclick="nextTrack()">SKIP ▷▷</button>
+            <button class="btn-ctrl" id="btnPlay" onclick="togglePlay()">▶ PLAY</button>
             <div class="vol-wrap">
-              <input type="range" class="vol-slider" min="0" max="100" value="70" oninput="setVol(this.value)">
-              <span id="volLbl" style="font-family:var(--font-mono);font-size:9px;color:var(--muted)">70%</span>
+              <input type="range" class="vol-slider" min="0" max="100" value="80"
+                oninput="setVol(this.value)" id="volRange">
+              <span id="volLbl" style="font-family:var(--font-mono);font-size:9px;color:var(--muted)">80%</span>
             </div>
-            <span class="mood-tag mood-dark" id="nowMood">DARK</span>
+            <span class="mood-tag mood-dark" id="nowMood">LIVE</span>
           </div>
         </div>
       </div>
       <div class="waveform" id="waveform"></div>
     </div>
 
+    <!-- STREAM SELECTOR -->
+    <div class="stream-selector">
+      <div class="section-label">// select stream — all free · 24/7 · no ads</div>
+      <div class="stream-grid" id="streamGrid"></div>
+      <div class="stream-status" id="streamStatus">// press play to start broadcasting</div>
+    </div>
+
     <!-- TABS -->
     <div class="tabs" id="mainTabs">
-      <button class="tab active" onclick="switchTab('soundcloud',this)">SOUNDCLOUD</button>
+      <button class="tab active" onclick="switchTab('youtube',this)">LIVE SETS</button>
       <button class="tab" onclick="switchTab('artists',this)">ARTISTS</button>
-      <button class="tab" onclick="switchTab('youtube',this)">YOUTUBE</button>
       <button class="tab" onclick="switchTab('mood',this)">MOOD AI</button>
       <button class="tab" onclick="switchTab('recs',this)">RECS AI</button>
     </div>
 
-    <!-- SOUNDCLOUD TAB -->
-    <div class="tab-content active" id="tab-soundcloud">
-      <div class="section-label">// live rotation — underground picks</div>
-      <div class="embed-box">
-        <div class="embed-label">▶ TRACK 01 — MXLPHA / DARK TECHNO</div>
-        <iframe scrolling="no" allow="autoplay"
-          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/djsquircle/sets/techno&color=%23ff2d78&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
-          height="120"></iframe>
+    <!-- LIVE SETS (YOUTUBE) TAB -->
+    <div class="tab-content active" id="tab-youtube">
+      <div class="section-label">// underground live sets & mixes</div>
+      <div class="yt-list">
+
+        <div class="yt-card">
+          <div class="yt-meta">
+            <div>
+              <div class="yt-title">BLADE RUNNER AMBIENT MIX</div>
+              <div class="yt-artist">DARK AMBIENT · 2HR SET</div>
+            </div>
+            <span class="mood-tag mood-dark">DARK</span>
+          </div>
+          <iframe width="100%" height="200"
+            src="https://www.youtube.com/embed/6-qqaRDDCMw?controls=1&modestbranding=1&rel=0"
+            allowfullscreen loading="lazy"></iframe>
+        </div>
+
+        <div class="yt-card">
+          <div class="yt-meta">
+            <div>
+              <div class="yt-title">UNDERGROUND TECHNO LIVE SET</div>
+              <div class="yt-artist">INDUSTRIAL · EBM · 1HR SET</div>
+            </div>
+            <span class="mood-tag mood-hype">HYPE</span>
+          </div>
+          <iframe width="100%" height="200"
+            src="https://www.youtube.com/embed/4ud2jCmFsO4?controls=1&modestbranding=1&rel=0"
+            allowfullscreen loading="lazy"></iframe>
+        </div>
+
+        <div class="yt-card">
+          <div class="yt-meta">
+            <div>
+              <div class="yt-title">LATE NIGHT DOWNTEMPO MIX</div>
+              <div class="yt-artist">AMBIENT · IDM · CHILLOUT</div>
+            </div>
+            <span class="mood-tag mood-chill">CHILL</span>
+          </div>
+          <iframe width="100%" height="200"
+            src="https://www.youtube.com/embed/YBmKiHDRXk4?controls=1&modestbranding=1&rel=0"
+            allowfullscreen loading="lazy"></iframe>
+        </div>
+
+        <div class="yt-card">
+          <div class="yt-meta">
+            <div>
+              <div class="yt-title">DRONE & NOISE TEXTURES</div>
+              <div class="yt-artist">EXPERIMENTAL · MINIMAL · RAW</div>
+            </div>
+            <span class="mood-tag mood-raw">RAW</span>
+          </div>
+          <iframe width="100%" height="200"
+            src="https://www.youtube.com/embed/7qOiP0B_4qY?controls=1&modestbranding=1&rel=0"
+            allowfullscreen loading="lazy"></iframe>
+        </div>
+
       </div>
-      <div class="embed-box">
-        <div class="embed-label">▶ TRACK 02 — UNDERGROUND INDIE / AMBIENT</div>
-        <iframe scrolling="no" allow="autoplay"
-          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/discover&color=%23ff6fa3&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
-          height="120"></iframe>
-      </div>
-      <p style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:12px;letter-spacing:1px">
-        // CONNECT YOUR SOUNDCLOUD ARTIST ACCOUNT TO BE FEATURED IN ROTATION
-      </p>
     </div>
 
     <!-- ARTISTS TAB -->
@@ -286,42 +344,11 @@ iframe{border:none;width:100%}
       <div class="artists-grid" id="artistsGrid"></div>
     </div>
 
-    <!-- YOUTUBE TAB -->
-    <div class="tab-content" id="tab-youtube">
-      <div class="section-label">// youtube underground sessions</div>
-      <div class="yt-list">
-        <div class="yt-card">
-          <div class="yt-meta">
-            <div>
-              <div class="yt-title">GHOST PROTOCOL</div>
-              <div class="yt-artist">CASSIA GREY</div>
-            </div>
-            <span class="mood-tag mood-hype">HYPE</span>
-          </div>
-          <iframe width="100%" height="200"
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=1&modestbranding=1&rel=0"
-            allowfullscreen></iframe>
-        </div>
-        <div class="yt-card">
-          <div class="yt-meta">
-            <div>
-              <div class="yt-title">SUB RESONANCE (LIVE SET)</div>
-              <div class="yt-artist">DJ VANTA</div>
-            </div>
-            <span class="mood-tag mood-dark">DARK</span>
-          </div>
-          <iframe width="100%" height="200"
-            src="https://www.youtube.com/embed/5qap5aO4i9A?controls=1&modestbranding=1&rel=0"
-            allowfullscreen></iframe>
-        </div>
-      </div>
-    </div>
-
     <!-- MOOD AI TAB -->
     <div class="tab-content" id="tab-mood">
       <div class="section-label">// ai mood classifier</div>
       <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">
-        Describe your vibe. The AI will classify your mood and recommend a sonic direction.
+        Describe your vibe. The AI will classify your mood and recommend which stream to tune into.
       </p>
       <textarea class="ai-input" id="moodInput" rows="3"
         placeholder="e.g. 3am, raining, city lights through the window..."></textarea>
@@ -352,8 +379,7 @@ iframe{border:none;width:100%}
   <div class="side-col">
     <div class="side-inner" id="sideContent"></div>
   </div>
-
-</div><!-- /app-body -->
+</div>
 
 <!-- MOBILE SIDEBAR -->
 <div class="mobile-sidebar" id="mobileSidebar">
@@ -362,42 +388,120 @@ iframe{border:none;width:100%}
 
 <!-- MOBILE BOTTOM NAV -->
 <nav class="mobile-nav">
-  <button class="mnav-btn active" onclick="mobileTab('soundcloud',this)">
-    <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-    SC
+  <button class="mnav-btn active" onclick="mobileTab('youtube',this)">
+    <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><polygon points="10,9 16,12 10,15"/></svg>
+    SETS
   </button>
   <button class="mnav-btn" onclick="mobileTab('artists',this)">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     ARTISTS
   </button>
-  <button class="mnav-btn" onclick="mobileTab('youtube',this)">
-    <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><polygon points="10,9 16,12 10,15"/></svg>
-    YT
-  </button>
   <button class="mnav-btn" onclick="mobileTab('mood',this)">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
     MOOD
   </button>
-  <button class="mnav-btn" onclick="toggleMobileSidebar(this)">
+  <button class="mnav-btn" onclick="mobileTab('recs',this)">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+    RECS
+  </button>
+  <button class="mnav-btn" onclick="toggleMobileSidebar(this)">
+    <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
     DJ
   </button>
 </nav>
 
 <script>
 /* ================================================================
-   VOIDFILL.fm — CONFIGURATION
-   
-   ================================================================ */
+   CONFIGURATION
+   Replace YOUR_GROQ_API_KEY_HERE with your key from console.groq.com
+   Free signup — no credit card needed.
+================================================================ */
 const GROQ_API_KEY = "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";
 const GROQ_MODEL   = "llama-3.3-70b-versatile";
 
 /* ================================================================
-   ARTIST DATA
-   Replace these with real underground artists you want to feature.
-   Fields: name, genre, av (emoji), col (hex colour),
-           links (sc/sp/yt/am URLs), mood (dark/chill/hype/raw)
-   ================================================================ */
+   SOMA FM STREAMS
+   All free, 24/7, no ads, no account needed.
+   Each stream has a primary URL and a fallback.
+================================================================ */
+const STREAMS = [
+  {
+    id:      "darkzone",
+    label:   "DARK ZONE",
+    desc:    "Industrial · EBM · Dark Electronic",
+    mood:    "dark",
+    moodTag: "mood-dark",
+    urls:    [
+      "https://ice6.somafm.com/darkzone-128-mp3",
+      "https://ice2.somafm.com/darkzone-128-mp3",
+      "https://ice4.somafm.com/darkzone-128-mp3"
+    ]
+  },
+  {
+    id:      "groovesalad",
+    label:   "GROOVE SALAD",
+    desc:    "Ambient · IDM · Downtempo",
+    mood:    "chill",
+    moodTag: "mood-chill",
+    urls:    [
+      "https://ice6.somafm.com/groovesalad-128-mp3",
+      "https://ice2.somafm.com/groovesalad-128-mp3",
+      "https://ice4.somafm.com/groovesalad-128-mp3"
+    ]
+  },
+  {
+    id:      "dronezone",
+    label:   "DRONE ZONE",
+    desc:    "Atmospheric · Experimental · Minimal",
+    mood:    "chill",
+    moodTag: "mood-chill",
+    urls:    [
+      "https://ice6.somafm.com/dronezone-128-mp3",
+      "https://ice2.somafm.com/dronezone-128-mp3",
+      "https://ice4.somafm.com/dronezone-128-mp3"
+    ]
+  },
+  {
+    id:      "illstreet",
+    label:   "ILL STREET BLUES",
+    desc:    "Grimy Hip-Hop · Underground Beats",
+    mood:    "raw",
+    moodTag: "mood-raw",
+    urls:    [
+      "https://ice6.somafm.com/illstreet-128-mp3",
+      "https://ice2.somafm.com/illstreet-128-mp3",
+      "https://ice4.somafm.com/illstreet-128-mp3"
+    ]
+  },
+  {
+    id:      "suburbsofgoa",
+    label:   "SUBURBS OF GOA",
+    desc:    "Psychedelic · Tribal · Global Bass",
+    mood:    "hype",
+    moodTag: "mood-hype",
+    urls:    [
+      "https://ice6.somafm.com/suburbsofgoa-128-mp3",
+      "https://ice2.somafm.com/suburbsofgoa-128-mp3",
+      "https://ice4.somafm.com/suburbsofgoa-128-mp3"
+    ]
+  },
+  {
+    id:      "deepspaceone",
+    label:   "DEEP SPACE ONE",
+    desc:    "Deep Space · Cosmic · Ambient",
+    mood:    "chill",
+    moodTag: "mood-chill",
+    urls:    [
+      "https://ice6.somafm.com/deepspaceone-128-mp3",
+      "https://ice2.somafm.com/deepspaceone-128-mp3",
+      "https://ice4.somafm.com/deepspaceone-128-mp3"
+    ]
+  },
+];
+
+/* ================================================================
+   ARTIST DATA — replace with real artists you want to feature
+================================================================ */
 const ARTISTS = [
   { name:"MXLPHA",     genre:"DARK TECHNO",   av:"🎛", col:"#ff2d78", links:{ sc:"https://soundcloud.com", sp:"https://open.spotify.com", am:"https://music.apple.com" }, mood:"dark"  },
   { name:"Cassia Grey", genre:"ETHEREAL POP", av:"🎙", col:"#ff6fa3", links:{ sc:"https://soundcloud.com", sp:"https://open.spotify.com", yt:"https://youtube.com"      }, mood:"chill" },
@@ -407,79 +511,128 @@ const ARTISTS = [
   { name:"Solenne B",  genre:"AFROFUTURISM",  av:"🎵", col:"#ff2d78", links:{ sp:"https://open.spotify.com", am:"https://music.apple.com", sc:"https://soundcloud.com"  }, mood:"raw"  },
 ];
 
-const TRACKS = [
-  { title:"Undertow",       artist:"MXLPHA",      genre:"DARK TECHNO / 128 BPM", mood:"dark"  },
-  { title:"Ghost Protocol", artist:"Cassia Grey",  genre:"ETHEREAL POP / 96 BPM", mood:"chill" },
-  { title:"Sub Resonance",  artist:"DJ Vanta",     genre:"INDUSTRIAL / 145 BPM",  mood:"hype"  },
-  { title:"Pale Signal",    artist:"Null Body",    genre:"AMBIENT / 72 BPM",      mood:"chill" },
-  { title:"Red Circuit",    artist:"RVLT",         genre:"UK GARAGE / 134 BPM",   mood:"hype"  },
-];
-
 const UP_NEXT = [
-  "Cassia Grey — Ghost Protocol",
-  "DJ Vanta — Sub Resonance",
-  "Null Body — Pale Signal",
-  "RVLT — Red Circuit",
+  "DARK ZONE — Industrial · EBM",
+  "DRONE ZONE — Atmospheric · Minimal",
+  "GROOVE SALAD — Ambient · IDM",
+  "ILL STREET BLUES — Underground Hip-Hop",
 ];
 
 /* ── STATE ── */
-let curTrack = 0, playing = false, chatHistory = [];
+let playing        = false;
+let currentStream  = null;
+let urlIndex       = 0;
+let chatHistory    = [];
+const audio        = document.getElementById('radioAudio');
+audio.volume       = 0.8;
 
 /* ================================================================
-   GROQ API HELPER
-   All AI features route through here.
-   ================================================================ */
-async function callAI(prompt, systemPrompt) {
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type":  "application/json",
-      "Authorization": "Bearer " + GROQ_API_KEY
-    },
-    body: JSON.stringify({
-      model:      GROQ_MODEL,
-      max_tokens: 1000,
-      messages: [
-        { role: "system", content: systemPrompt || "You are an AI DJ for VOIDFILL.fm underground radio. Terse, cool, knowledgeable. No hashtags." },
-        { role: "user",   content: prompt }
-      ]
-    })
-  });
-  const data = await response.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.choices[0].message.content;
+   STREAM PLAYER
+================================================================ */
+function buildStreamGrid() {
+  document.getElementById('streamGrid').innerHTML = STREAMS.map(s => `
+    <button class="stream-btn" id="sbtn-${s.id}" onclick="selectStream('${s.id}')">
+      ${s.label}
+    </button>`).join('');
 }
 
-/* ── SIDEBAR HTML (shared desktop + mobile) ── */
-function sideHTML() {
-  return `
-    <div class="stat-grid">
-      <div class="stat-card"><div class="stat-val" id="lc">1,247</div><div class="stat-lbl">LISTENERS</div></div>
-      <div class="stat-card"><div class="stat-val">24/7</div><div class="stat-lbl">BROADCAST</div></div>
-      <div class="stat-card"><div class="stat-val">847</div><div class="stat-lbl">TRACKS</div></div>
-      <div class="stat-card"><div class="stat-val">203</div><div class="stat-lbl">ARTISTS</div></div>
-    </div>
-    <div class="dj-title">AI DJ</div>
-    <div class="dj-sub">// VOIDFILL INTELLIGENCE v1.0</div>
-    <div class="chat-msgs" id="chatMsgs">
-      <div class="msg dj">
-        <div class="msg-lbl">DJ FREQ</div>
-        Welcome to VOIDFILL.fm. Ask me about artists, request tracks, or just talk music. The underground never sleeps.
-      </div>
-    </div>
-    <div class="chat-row">
-      <input class="chat-in" id="chatIn" placeholder="talk to the DJ..."
-        onkeydown="if(event.key==='Enter')sendChat()">
-      <button class="btn-send" onclick="sendChat()">SEND</button>
-    </div>
-    <div class="up-next-list">
-      <div class="section-label">// up next</div>
-      ${UP_NEXT.map((t,i) => `
-        <div class="up-row">
-          <span class="up-num">${String(i+1).padStart(2,'0')}</span>
-          <span class="up-text">${t}</span>
-        </div>`).join('')}
-    </div>`;
+function selectStream(id) {
+  const stream = STREAMS.find(s => s.id === id);
+  if (!stream) return;
+
+  // Update UI buttons
+  document.querySelectorAll('.stream-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sbtn-' + id).classList.add('active');
+
+  currentStream = stream;
+  urlIndex      = 0;
+
+  // Update now-playing meta
+  document.getElementById('trackTitle').textContent  = stream.label;
+  document.getElementById('trackArtist').textContent = 'SOMA FM';
+  document.getElementById('trackGenre').textContent  = stream.desc.toUpperCase();
+  const moodEl = document.getElementById('nowMood');
+  moodEl.className  = 'mood-tag ' + stream.moodTag;
+  moodEl.textContent = stream.mood.toUpperCase();
+
+  // Auto-play on select
+  startStream();
+}
+
+function startStream() {
+  if (!currentStream) return;
+  setStatus('// connecting to stream...');
+  audio.src   = currentStream.urls[urlIndex];
+  audio.load();
+  audio.play()
+    .then(() => {
+      playing = true;
+      updatePlayBtn();
+      setStatus('// streaming live — ' + currentStream.desc.toLowerCase());
+    })
+    .catch(() => tryNextUrl());
+}
+
+function tryNextUrl() {
+  urlIndex++;
+  if (currentStream && urlIndex < currentStream.urls.length) {
+    setStatus('// retrying on backup server...');
+    audio.src = currentStream.urls[urlIndex];
+    audio.load();
+    audio.play().then(() => {
+      playing = true;
+      updatePlayBtn();
+      setStatus('// streaming live — ' + currentStream.desc.toLowerCase());
+    }).catch(() => tryNextUrl());
+  } else {
+    setStatus('// stream unavailable — try another channel');
+    playing = false;
+    updatePlayBtn();
+  }
+}
+
+audio.addEventListener('error', () => { if (playing) tryNextUrl(); });
+audio.addEventListener('stalled', () => { if (playing) tryNextUrl(); });
+
+function togglePlay() {
+  if (!currentStream) {
+    selectStream(STREAMS[0].id);
+    return;
+  }
+  if (playing) {
+    audio.pause();
+    playing = false;
+    setStatus('// paused');
+  } else {
+    startStream();
+  }
+  updatePlayBtn();
+}
+
+function updatePlayBtn() {
+  const btn    = document.getElementById('btnPlay');
+  const vinyl  = document.getElementById('vinyl');
+  const bars   = document.querySelectorAll('.waveform-bar');
+  if (playing) {
+    btn.textContent = '▐▐ PAUSE';
+    btn.classList.add('active');
+    vinyl.classList.remove('paused');
+    bars.forEach(b => b.classList.remove('paused'));
+  } else {
+    btn.textContent = '▶ PLAY';
+    btn.classList.remove('active');
+    vinyl.classList.add('paused');
+    bars.forEach(b => b.classList.add('paused'));
+  }
+}
+
+function setVol(v) {
+  audio.volume = v / 100;
+  document.getElementById('volLbl').textContent = v + '%';
+}
+
+function setStatus(msg) {
+  document.getElementById('streamStatus').textContent = msg;
 }
 
 /* ── WAVEFORM ── */
@@ -488,10 +641,42 @@ function buildWaveform() {
   w.innerHTML = '';
   for (let i = 0; i < 55; i++) {
     const b = document.createElement('div');
-    b.className = 'waveform-bar';
+    b.className = 'waveform-bar paused';
     b.style.cssText = `height:${Math.random()*28+8}px;animation-delay:${Math.random()}s;animation-duration:${0.6+Math.random()*0.8}s`;
     w.appendChild(b);
   }
+}
+
+/* ── SIDEBAR ── */
+function sideHTML() {
+  return `
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-val" id="lc">1,247</div><div class="stat-lbl">LISTENERS</div></div>
+      <div class="stat-card"><div class="stat-val">24/7</div><div class="stat-lbl">BROADCAST</div></div>
+      <div class="stat-card"><div class="stat-val">6</div><div class="stat-lbl">STREAMS</div></div>
+      <div class="stat-card"><div class="stat-val">203</div><div class="stat-lbl">ARTISTS</div></div>
+    </div>
+    <div class="dj-title">AI DJ</div>
+    <div class="dj-sub">// VOIDFILL INTELLIGENCE v1.0</div>
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="msg dj">
+        <div class="msg-lbl">DJ FREQ</div>
+        Welcome to VOIDFILL.fm. Pick a stream and hit play — or ask me anything about underground music. Signal is live.
+      </div>
+    </div>
+    <div class="chat-row">
+      <input class="chat-in" id="chatIn" placeholder="talk to the DJ..."
+        onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn-send" onclick="sendChat()">SEND</button>
+    </div>
+    <div class="up-next-list">
+      <div class="section-label">// streams</div>
+      ${UP_NEXT.map((t,i) => `
+        <div class="up-row">
+          <span class="up-num">${String(i+1).padStart(2,'0')}</span>
+          <span class="up-text">${t}</span>
+        </div>`).join('')}
+    </div>`;
 }
 
 /* ── ARTISTS GRID ── */
@@ -532,7 +717,6 @@ function mobileTab(id, btn) {
   }
 }
 
-/* ── MOBILE SIDEBAR ── */
 function toggleMobileSidebar(btn) {
   const sb   = document.getElementById('mobileSidebar');
   const open = sb.classList.toggle('open');
@@ -543,29 +727,26 @@ function closeMobileSidebar() {
   document.getElementById('mobileSidebar').classList.remove('open');
 }
 
-/* ── PLAYER CONTROLS ── */
-function togglePlay() {
-  playing = !playing;
-  const b = document.getElementById('btnPlay');
-  b.textContent = playing ? '▐▐ PAUSE' : '▶ PLAY';
-  b.classList.toggle('active', playing);
-}
-
-function nextTrack() {
-  curTrack = (curTrack + 1) % TRACKS.length;
-  const t  = TRACKS[curTrack];
-  document.getElementById('trackTitle').textContent  = t.title;
-  document.getElementById('trackArtist').textContent = t.artist;
-  document.getElementById('trackGenre').textContent  = t.genre;
-  const moodClasses = { dark:'mood-dark', chill:'mood-chill', hype:'mood-hype', raw:'mood-raw' };
-  const el = document.getElementById('nowMood');
-  el.className  = 'mood-tag ' + moodClasses[t.mood];
-  el.textContent = t.mood.toUpperCase();
-  buildWaveform();
-}
-
-function setVol(v) {
-  document.getElementById('volLbl').textContent = v + '%';
+/* ── GROQ API HELPER ── */
+async function callAI(prompt, systemPrompt) {
+  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type":  "application/json",
+      "Authorization": "Bearer " + GROQ_API_KEY
+    },
+    body: JSON.stringify({
+      model:      GROQ_MODEL,
+      max_tokens: 1000,
+      messages: [
+        { role: "system", content: systemPrompt || "You are an AI DJ for VOIDFILL.fm underground radio. Terse, cool, knowledgeable. No hashtags." },
+        { role: "user",   content: prompt }
+      ]
+    })
+  });
+  const data = await response.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.choices[0].message.content;
 }
 
 /* ── AI: ARTIST BIO ── */
@@ -584,7 +765,7 @@ async function loadBio(i, btn) {
       `Write a short, atmospheric 2-sentence artist bio for ${a.name}, an underground ${a.genre} artist. Dark, cryptic tone. No generic phrases.`,
       "You write ultra-concise atmospheric artist bios for underground artists. Dark, specific, poetic. Max 2 sentences. No hashtags."
     );
-    el.textContent = text;
+    el.textContent  = text;
     el.classList.add('on');
     btn.textContent = '▲ HIDE BIO';
   } catch (err) {
@@ -604,8 +785,8 @@ async function analyzeMood() {
   btn.disabled  = true;
   try {
     const raw = await callAI(
-      `User: "${inp}". Respond ONLY with valid JSON and nothing else (no markdown fences, no explanation): {"summary":"2 sentence mood read","scores":{"dark":0,"chill":0,"hype":0,"raw":0},"recommendation":"one sentence sonic direction"} — replace the 0s with numbers 0-100.`,
-      "You are a music mood AI. Respond ONLY with valid raw JSON. No markdown. No code fences. No extra text whatsoever."
+      `User: "${inp}". Respond ONLY with valid raw JSON and nothing else: {"summary":"2 sentence mood read","scores":{"dark":0,"chill":0,"hype":0,"raw":0},"recommendation":"one sentence recommending which stream to tune into from: Dark Zone, Groove Salad, Drone Zone, Ill Street Blues, Suburbs of Goa, Deep Space One"} — replace the 0s with numbers 0-100.`,
+      "You are a music mood AI for VOIDFILL.fm. Respond ONLY with valid raw JSON. No markdown. No code fences. No extra text."
     );
     const d = JSON.parse(raw.trim());
     document.getElementById('moodTxt').textContent = d.summary;
@@ -640,7 +821,7 @@ async function getRecs() {
   btn.disabled  = true;
   try {
     const raw = await callAI(
-      `User wants: "${inp}". Respond ONLY with valid raw JSON and nothing else (no markdown fences): {"tracks":[{"title":"...","artist":"...","genre":"...","mood":"dark","why":"one short reason"}]} — give exactly 5 fictional underground/indie tracks. mood must be one of: dark, chill, hype, raw.`,
+      `User wants: "${inp}". Respond ONLY with valid raw JSON and nothing else: {"tracks":[{"title":"...","artist":"...","genre":"...","mood":"dark","why":"one short reason"}]} — give exactly 5 fictional underground/indie tracks. mood must be one of: dark, chill, hype, raw.`,
       "You are a music recommendation AI for VOIDFILL.fm underground radio. Respond ONLY with valid raw JSON. No markdown. No code fences. No extra text. Create plausible underground artist names and track titles."
     );
     const d = JSON.parse(raw.trim());
@@ -669,7 +850,7 @@ async function sendChat() {
   const inp  = document.getElementById('chatIn');
   if (!inp) return;
   const msg  = inp.value.trim();
-  if (!msg)  return;
+  if (!msg) return;
   inp.value  = '';
   const msgs = document.getElementById('chatMsgs');
   if (!msgs) return;
@@ -692,7 +873,7 @@ async function sendChat() {
         messages: [
           {
             role:    "system",
-            content: "You are DJ FREQ, the AI DJ of VOIDFILL.fm underground radio. You know everything about underground electronic, indie, and experimental music. Keep replies short — 2 to 4 sentences max. Terse, cool, knowledgeable. No hashtags. Artists currently on rotation: MXLPHA, Cassia Grey, DJ Vanta, Null Body, RVLT, Solenne B."
+            content: "You are DJ FREQ, the AI DJ of VOIDFILL.fm underground radio. You know everything about underground electronic, indie, experimental, and ambient music. Keep replies short — 2 to 4 sentences max. Terse, cool, knowledgeable. No hashtags. The station plays 6 live SomaFM streams: Dark Zone (industrial/EBM), Groove Salad (ambient/IDM), Drone Zone (atmospheric/experimental), Ill Street Blues (underground hip-hop), Suburbs of Goa (psychedelic/global bass), Deep Space One (cosmic ambient). Featured artists: MXLPHA, Cassia Grey, DJ Vanta, Null Body, RVLT, Solenne B."
           },
           ...chatHistory
         ]
@@ -713,6 +894,7 @@ async function sendChat() {
 document.getElementById('sideContent').innerHTML       = sideHTML();
 document.getElementById('mobileSideContent').innerHTML = sideHTML();
 document.getElementById('artistsGrid').innerHTML        = artistsHTML();
+buildStreamGrid();
 buildWaveform();
 
 // Animate listener count
