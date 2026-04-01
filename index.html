@@ -816,13 +816,6 @@ async function fetchSuggestions() {
 function renderSuggestions(d) {
   const wrap = document.getElementById('suggestionsWrap');
 
-  const tagColors = {
-    jazz:    '#ffb347', bossa: '#ffb347',
-    chill:   '#e8ff47', ambient: '#e8ff47',
-    lounge:  '#c084fc',
-    flow:    '#00e5ff', soul: '#00e5ff',
-    pop:     '#ff6fa3',
-  };
 
   const items = d.tracks.map((t, i) => {
     const col = tagColors[t.tag] || '#888';
