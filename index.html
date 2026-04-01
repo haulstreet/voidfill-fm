@@ -272,11 +272,11 @@ input[type=range]::-webkit-slider-thumb{
   padding:2px 6px;letter-spacing:1px;
   border:1px solid;flex-shrink:0;
 }
-.mood-brazil{color:#ffb347;border-color:#ffb34740;background:#1a0e00}
+.mood-jazz{color:#ffb347;border-color:#ffb34740;background:#1a0e00}
 .mood-chill{color:#e8ff47;border-color:#e8ff4740;background:#0d1000}
 .mood-lounge{color:#c084fc;border-color:#c084fc40;background:#0d0014}
-.mood-mellow{color:#00e5ff;border-color:#00e5ff40;background:#001518}
-.mood-indie{color:#ff6fa3;border-color:#ff6fa340;background:#150008}
+.mood-flow{color:#00e5ff;border-color:#00e5ff40;background:#001518}
+.mood-pop{color:#ff6fa3;border-color:#ff6fa340;background:#150008}
 
 /* ── RIGHT PANEL ── */
 .right{
@@ -613,6 +613,7 @@ const STATIONS = [
   {
     id:    "station four",
     name:  "STATION FOUR",
+    genre: "Funk · Jazz · Soulful Electronic",
     mood:  "mellow",
     moodLabel: "MELLOW",
     urls:  [
@@ -794,7 +795,7 @@ async function fetchSuggestions() {
     const raw = await callGroq([
       {
         role:    "system",
-        content: `You are DJ ROMAN, the AI DJ of VOIDFILL.fm underground radio. You have encyclopaedic knowledge of music across all genres. When given a SomaFM station name and genre, you suggest real songs the listener should seek out that fit the vibe. Recommend new tracks every time it loads. Be specific — real artists, real song titles. Respond ONLY with valid raw JSON, no markdown, no code fences, no extra text.`
+        content: `You are DJ ROMAN, the AI DJ of VOIDFILL.fm underground radio. You have encyclopaedic knowledge of music across all genres. When given a SomaFM station name and genre, you suggest real songs the listener should seek out that fit the vibe. Be specific — real artists, real song titles. Respond ONLY with valid raw JSON, no markdown, no code fences, no extra text.`
       },
       {
         role:    "user",
