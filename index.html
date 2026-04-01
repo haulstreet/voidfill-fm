@@ -462,15 +462,15 @@ input[type=range]::-webkit-slider-thumb{
     <span class="ticker-track">
       VOIDFILL.fm — LIVE UNDERGROUND RADIO
       <span class="tick-sep">///</span>
-      BOM DIA — Bossa Nova · Samba · Brazilian Soul
+      BOSSA BEYOND — Bossa Nova · Samba · Brazilian Soul
       <span class="tick-sep">///</span>
-      ALIEN ABDUCTION BOP's — Vintage Ambient · Downtempo
+      GROOVE SALAD CLASSIC — Vintage Ambient · Downtempo
       <span class="tick-sep">///</span>
-      KINDA OLD BOP — Lounge
+      ILLINOIS STREET LOUNGE — Cocktail · Exotica · Lounge
       <span class="tick-sep">///</span>
-      STATION #4 — Liquid Funk · Jazz · Soulful Electronic
+      FLUID — Liquid Funk · Jazz · Soulful Electronic
       <span class="tick-sep">///</span>
-      SLEEZEmix — Indie · Electropop · Alt
+      POPTRON — Indie Pop · Electropop · Alternative
       <span class="tick-sep">///</span>
     </span>
   </div>
@@ -526,7 +526,7 @@ input[type=range]::-webkit-slider-thumb{
 
       <div class="ai-header">
         <div class="ai-title-wrap">
-          <div class="ai-title">AI DJ ROMAN </div>
+          <div class="ai-title">AI DJ FREQ</div>
           <div class="ai-sub">// SONG SUGGESTIONS + CHAT</div>
         </div>
         <div class="ai-status">
@@ -538,15 +538,15 @@ input[type=range]::-webkit-slider-thumb{
       <div class="suggestions-wrap" id="suggestionsWrap">
         <div class="state-msg" id="stateMsg">
           <div class="big">NO SIGNAL YET</div>
-          <p>Pick a station and hit play. DJ ROMAN will analyse what's on air and suggest tracks you'll want to find.</p>
+          <p>Pick a station and hit play. DJ FREQ will analyse what's on air and suggest tracks you'll want to find.</p>
         </div>
       </div>
 
       <div class="chat-wrap">
-        <div class="chat-label">// TALK TO DJ ROMAN</div>
+        <div class="chat-label">// TALK TO DJ FREQ</div>
         <div class="chat-history" id="chatHistory">
           <div class="chat-msg dj">
-            <div class="chat-msg-lbl">DJ ROMAN</div>
+            <div class="chat-msg-lbl">DJ FREQ</div>
             Signal's open. Pick a station and I'll tell you what to listen for next.
           </div>
         </div>
@@ -566,7 +566,7 @@ input[type=range]::-webkit-slider-thumb{
 /* ================================================================
    CONFIG — paste your free Groq key from console.groq.com
 ================================================================ */
-const GROQ_KEY   = "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";
+const GROQ_KEY   = "YOUR_GROQ_API_KEY_HERE";
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 /* ================================================================
@@ -575,7 +575,7 @@ const GROQ_MODEL = "llama-3.3-70b-versatile";
 const STATIONS = [
   {
     id:    "bossa",
-    name:  "BOM DIA",
+    name:  "Bossa Beyond",
     genre: "Bossa Nova · Samba · Brazilian Soul",
     mood:  "jazz",
     moodLabel: "JAZZ",
@@ -587,7 +587,7 @@ const STATIONS = [
   },
   {
     id:    "gsclassic",
-    name:  "Alien Abduction Bop",
+    name:  "Groove Salad Classic",
     genre: "Vintage Ambient · Downtempo · IDM",
     mood:  "chill",
     moodLabel: "CHILL",
@@ -599,7 +599,7 @@ const STATIONS = [
   },
   {
     id:    "illstreet",
-    name:  "KINDA OLD BOP",
+    name:  "Illinois Street Lounge",
     genre: "Cocktail · Exotica · Easy Listening",
     mood:  "lounge",
     moodLabel: "LOUNGE",
@@ -611,8 +611,8 @@ const STATIONS = [
   },
   {
     id:    "fluid",
-    name:  "STATION #4",
-    genre: "Funk · Jazz · Soulful Electronic",
+    name:  "Fluid",
+    genre: "Liquid Funk · Jazz · Soulful Electronic",
     mood:  "flow",
     moodLabel: "FLOW",
     urls:  [
@@ -623,8 +623,8 @@ const STATIONS = [
   },
   {
     id:    "poptron",
-    name:  "SLEEZEmix",
-    genre: "Indie · Electropop · Alt",
+    name:  "PopTron",
+    genre: "Indie Pop · Electropop · Alternative",
     mood:  "pop",
     moodLabel: "POP",
     urls:  [
