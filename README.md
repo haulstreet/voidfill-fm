@@ -40,5 +40,3 @@ HTML · CSS · Vanilla JS · [Groq API](https://console.groq.com) · [SomaFM](ht
 Hosted on GitHub Pages. Any edit via [github.dev](https://github.dev) (press `.` on the repo) → commit → live in ~60 seconds.
 
 ---
-
-*Built with [Claude](https://claude.ai)*
